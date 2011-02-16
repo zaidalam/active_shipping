@@ -8,20 +8,24 @@ module ActiveMerchant #:nodoc:
                   :province,
                   :city,
                   :name,
+                  :attention,
                   :address1,
                   :address2,
                   :address3,
                   :phone,
                   :fax,
                   :address_type
-      
+       
       alias_method :zip, :postal_code
       alias_method :postal, :postal_code
       alias_method :state, :province
       alias_method :territory, :province
       alias_method :region, :province
       
+        attr_accessor :shipper_number, :contact, :payment_type
+        
       def initialize(options = {})
+        @shipper_number=options[:shipper_number]
         @country = (options[:country].nil? or options[:country].is_a?(ActiveMerchant::Country)) ?
                       options[:country] :
                       ActiveMerchant::Country.find(options[:country])
@@ -34,6 +38,7 @@ module ActiveMerchant #:nodoc:
         @address3 = options[:address3]
         @phone = options[:phone]
         @fax = options[:fax]
+          @contact = options[:contact]
         raise ArgumentError.new('address_type must be either "residential" or "commercial"') if options[:address_type] and not (["residential", "commercial", ""]).include?(options[:address_type].to_s)
         @address_type = options[:address_type].nil? ? nil : options[:address_type].to_s
       end

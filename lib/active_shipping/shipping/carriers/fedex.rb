@@ -85,6 +85,10 @@ module ActiveMerchant
         'express_mps_master' => 'EXPRESS_MPS_MASTER'
       }
 
+      def self.include_ship_support!
+          include FedExShippingSupport
+      end
+        
       def self.service_name_for_code(service_code)
         ServiceTypes[service_code] || begin
           name = service_code.downcase.split('_').collect{|word| word.capitalize }.join(' ')
@@ -115,6 +119,8 @@ module ActiveMerchant
         parse_tracking_response(response, options)
       end
       
+ 
+
       protected
       def build_rate_request(origin, destination, packages, options={})
         imperial = ['US','LR','MM'].include?(origin.country_code(:alpha2))
@@ -221,7 +227,7 @@ module ActiveMerchant
           end
         end
       end
-      
+ 
       def parse_rate_response(origin, destination, packages, response, options)
         rate_estimates = []
         success, message = nil

@@ -90,6 +90,10 @@ module ActiveMerchant
       EU_COUNTRY_CODES = ["GB", "AT", "BE", "BG", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"]
       
       US_TERRITORIES_TREATED_AS_COUNTRIES = ["AS", "FM", "GU", "MH", "MP", "PW", "PR", "VI"]
+
+        def self.include_ship_support!
+            include UPSShippingSupport
+        end
       
       def requirements
         [:key, :login, :password]
@@ -388,3 +392,4 @@ module ActiveMerchant
     end
   end
 end
+

@@ -4,7 +4,8 @@ module ActiveMerchant #:nodoc:
       include Quantified
       
       cattr_accessor :default_options
-      attr_reader :options, :value, :currency
+      attr_reader :options, :value, :currency, :description
+      attr_accessor :tracking, :label, :cost, :errors, :insured_value, :shipper_type_id
 
       # Package.new(100, [10, 20, 30], :units => :metric)
       # Package.new(Mass.new(100, :grams), [10, 20, 30].map {|m| Length.new(m, :centimetres)})
@@ -33,7 +34,11 @@ module ActiveMerchant #:nodoc:
         @currency = options[:currency] || (options[:value].currency if options[:value].respond_to?(:currency))
         @cylinder = (options[:cylinder] || options[:tube]) ? true : false
       end
-  
+
+      def using_metric?
+          @unit_system == :metric
+      end
+
       def cylinder?
         @cylinder
       end
@@ -80,7 +85,7 @@ module ActiveMerchant #:nodoc:
         when :volumetric, :dimensional
           @volumetric_weight ||= begin
             m = Mass.new((centimetres(:box_volume) / 6.0), :grams)
-            @unit_system == :imperial ? m.in_ounces : m
+            using_metric? ? m.in_ounces : m
           end
         when :billable
           [ weight, weight(:type => :volumetric) ].max
@@ -110,7 +115,7 @@ module ActiveMerchant #:nodoc:
         if obj.is_a?(klass)
           return value
         else
-          return klass.new(obj, (@unit_system == :imperial ? imperial_unit : metric_unit))
+          return klass.new(obj, (using_metric? ? imperial_unit : metric_unit))
         end
       end
       

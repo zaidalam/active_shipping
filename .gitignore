@@ -1,6 +1,9 @@
+.#*
+*~
 .DS_Store
 test.xml
 sample.rb
 *.orig
 pkg
 .dotest
+test/fixtures.yml

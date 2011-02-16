@@ -1,12 +1,15 @@
 usps: 
   login: APIKey
 ups: 
-  key: XmlAccessKey
-  login: UPSDotComLogin
-  password: UPSDotComPassword
+  key: CC73455375308CD8
+  login: nathanstitt
+  password: nejiwj9
+  account: 671599
 fedex:
-  login: FedExAccountNumber
-  password: FedExMeterNumber
+  key: SqrHEIlzu0kVipE4
+  login: 100048030
+  password: gFFg2MzQlrjpImyGVHLv3TCVd
+  account: 510087364
   test: true
 shipwire:
   login: EmailAddress

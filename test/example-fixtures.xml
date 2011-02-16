@@ -1,0 +1,20 @@
+# you need to fill in this and rename it to fixtures.xml
+# in order to run remote tests
+usps: 
+  login: APIKey
+ups: 
+  key: 
+  login: 
+  password: 
+  account: 
+fedex:
+  key: 
+  login: 
+  password: 
+  account: 
+  test: 
+shipwire:
+  login: EmailAddress
+  password: Password
+canada_post:
+  login: CPC_DEMO_XML

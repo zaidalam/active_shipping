@@ -1,11 +1,11 @@
 module ActiveMerchant
     module Shipping
         class Label
-            attr_reader :tracking, :image, :format
+            attr_reader :tracking, :data, :format
             
             def initialize(attributes = {})
                 @tracking = attributes[:tracking]
-                @image = attributes[:image]
+                @data = attributes[:data]
                 @format = attributes[:format]
             end
         end

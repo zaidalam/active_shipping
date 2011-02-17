@@ -43,7 +43,7 @@ class UPSShippingTest < Test::Unit::TestCase
  
       unless shipment.labels.empty?
           File.open('/tmp/label.bin','w') do | lp |
-              lp.write shipment.labels.first.image
+              lp.write shipment.labels.first.data
           end
       end
 
@@ -58,7 +58,7 @@ class UPSShippingTest < Test::Unit::TestCase
       
       assert_equal 2, shipment.labels.length
       
-      assert shipment.labels.first.image =~ /TRACKING \#: 1Z/
+      assert shipment.labels.first.data =~ /TRACKING \#: 1Z/
           
   end
 

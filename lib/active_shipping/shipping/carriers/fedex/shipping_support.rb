@@ -28,7 +28,7 @@ module ActiveMerchant
                     root.elements['//Image'].each_with_index do | label,index |
                         shipment.labels << Label.new(
                                                      :tracking => xml.elements['//TrackingNumber'][index].to_s.strip,
-                                                     :image    => Base64.decode64( label.to_s )
+                                                     :data    => Base64.decode64( label.to_s )
                                                      )
                     end
                     shipment.tracking = root.elements['//TrackingNumber'][0].to_s

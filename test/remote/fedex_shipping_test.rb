@@ -54,7 +54,7 @@ class FedShippingTest < Test::Unit::TestCase
       assert shipment.labels.first.tracking
 
       File.open('/tmp/label.bin','w') do | lp |
-          lp.write shipment.labels.first.image
+          lp.write shipment.labels.first.data
       end
 
       File.open('/tmp/req.xml','w') do | db |

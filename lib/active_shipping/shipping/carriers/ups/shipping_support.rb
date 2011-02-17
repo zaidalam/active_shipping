@@ -189,7 +189,7 @@ module ActiveMerchant
                     shipment_results.elements.each('PackageResults') do |package_results|
                         shipment.labels << Label.new(
                                                      :tracking => package_results.text('TrackingNumber'),
-                                                     :image    => Base64.decode64( package_results.text('LabelImage/GraphicImage') ),
+                                                     :data    => Base64.decode64( package_results.text('LabelImage/GraphicImage') ),
                                                      :format   => package_results.text('LabelImage/LabelImageFormat/Code')
                                                      )
                     end

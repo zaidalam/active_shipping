@@ -5,8 +5,8 @@ module ActiveMerchant #:nodoc:
       
       cattr_accessor :default_options
       attr_reader :options, :value, :currency, :description
-      attr_accessor :tracking, :label, :cost, :errors, :insured_value, :shipper_type_id
-
+      attr_accessor :tracking, :label, :cost, :errors, :insured_value, :shipper_type_id, :reference_numbers
+        
       # Package.new(100, [10, 20, 30], :units => :metric)
       # Package.new(Mass.new(100, :grams), [10, 20, 30].map {|m| Length.new(m, :centimetres)})
       # Package.new(100.grams, [10, 20, 30].map(&:centimetres))
@@ -14,7 +14,7 @@ module ActiveMerchant #:nodoc:
         options = @@default_options.update(options) if @@default_options
         options.symbolize_keys!
         @options = options
-        
+        @reference_numbers = options[:reference_numbers] || []
         @dimensions = [dimensions].flatten.reject {|d| d.nil?}
         
         imperial = (options[:units] == :imperial) ||

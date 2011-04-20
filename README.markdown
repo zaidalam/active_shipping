@@ -6,6 +6,8 @@ We are starting out by only implementing the ability to list available shipping 
 
 Active Shipping is currently being used and improved in a production environment for the e-commerce application [Shopify][]. Development is being done by [James MacAulay][] (<james@jadedpixel.com>). Discussion is welcome in the [Active Merchant Google Group][discuss].
 
+This branch of Active Shipping includes extremely experimental shipping support for UPS & Fedex.  With it you can *hopefully* print out shipping labels and schedule pickups for packages.  My plan is to polish this up a bit more and then submit it for inclusion into the main branch.
+
 [Active Merchant]:http://www.activemerchant.org
 [Shopify]:http://www.shopify.com
 [James MacAulay]:http://jmacaulay.net

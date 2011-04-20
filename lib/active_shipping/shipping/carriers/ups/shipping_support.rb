@@ -13,7 +13,7 @@ module ActiveMerchant
                 cls::RESOURCES[:shipment_accept ] = 'ups.app/xml/ShipAccept'
             end
 
-            def ship( shipment, options )
+            def ship( shipment, options={} )
                 request = build_shipment_confirm_request(shipment)
                 
                 shipment.log(request)
@@ -225,6 +225,12 @@ module ActiveMerchant
                             package.cm(axis)
                         end
                     end
+                    package.reference_numbers.each do | refno |
+                        xml.ReferenceNumber do
+                            xml.Code( refno.code )
+                            xml.Value( refno.value )
+                        end
+                    end
                     if values.all? {|v| v > 0 }
                         xml.Dimensions do
                             xml.UnitOfMeasurement do
@@ -253,7 +259,6 @@ module ActiveMerchant
                         end
                     end
                     # not implemented: * Shipment/Package/LargePackageIndicator element
-                    # * Shipment/Package/ReferenceNumber element
                     # * Shipment/Package/AdditionalHandling element
                 end
             end

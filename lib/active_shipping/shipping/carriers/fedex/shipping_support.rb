@@ -5,7 +5,7 @@ module ActiveMerchant
     module Shipping
         module FedExShippingSupport
             
-            def ship( shipment, options )
+            def ship( shipment, options={} )
                 
                 req = build_shipment_request(shipment)
                 shipment.log(req)

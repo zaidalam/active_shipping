@@ -22,12 +22,14 @@ class UPSShippingTest < Test::Unit::TestCase
                             :address2 => '',
                             :address_type=>'commercial',
                             :zip => '65109')
-      
+      packages = [@packages[:just_ounces], @packages[:chocolate_stuff]]
+      packages.first.reference_numbers << ReferenceNumber.new('O1','A Short String')
+      packages.first.reference_numbers << ReferenceNumber.new('O2','A Bit Longer')
       shipment = Shipment.new(
                               :shipper => shipper,
                               :payer => shipper,
                               :destination => @locations[:new_york_with_name],
-                              :packages => [@packages[:just_ounces], @packages[:chocolate_stuff]],
+                              :packages => packages,
                               :printer => Printer.new({   :label_format=>'EPL',
                                                           :width=>8, :height=>4
                                                       }),
@@ -40,21 +42,20 @@ class UPSShippingTest < Test::Unit::TestCase
                                     :test=>true
                                 } )
       
- 
-      unless shipment.labels.empty?
-          File.open('/tmp/label.bin','w') do | lp |
-              lp.write shipment.labels.first.data
-          end
-      end
 
-      File.open('/tmp/req.xml','w') do | db |
-          xml = REXML::Document.new( shipment.log.first )
-          xml.write( db, 2 )
-      end
-      File.open('/tmp/resp.xml','w') do | db |
-          xml = REXML::Document.new( shipment.log.last )
-          xml.write( db, 2 )
-      end
+      # usefull for debugging
+      # unless shipment.labels.empty?
+      #     File.open('/tmp/label.bin','w') do | lp |
+      #         lp.write shipment.labels.first.data
+      #     end
+      # end
+
+      # shipment.log.each_with_index do | log,index |
+      #     File.open( "/tmp/ups-#{index}.xml",'w') do | f |
+      #         xml = REXML::Document.new( log )
+      #         xml.write( f, 2 )
+      #     end
+      # end
       
       assert_equal 2, shipment.labels.length
       

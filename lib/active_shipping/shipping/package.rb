@@ -85,7 +85,7 @@ module ActiveMerchant #:nodoc:
         when :volumetric, :dimensional
           @volumetric_weight ||= begin
             m = Mass.new((centimetres(:box_volume) / 6.0), :grams)
-            using_metric? ? m.in_ounces : m
+            using_metric? ? m : m.in_ounces
           end
         when :billable
           [ weight, weight(:type => :volumetric) ].max
@@ -115,7 +115,7 @@ module ActiveMerchant #:nodoc:
         if obj.is_a?(klass)
           return value
         else
-          return klass.new(obj, (using_metric? ? imperial_unit : metric_unit))
+          return klass.new(obj, (using_metric? ? metric_unit : imperial_unit))
         end
       end
       

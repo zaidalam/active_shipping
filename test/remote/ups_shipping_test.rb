@@ -24,7 +24,9 @@ class UPSShippingTest < Test::Unit::TestCase
                             :zip => '65109')
       packages = [@packages[:just_ounces], @packages[:chocolate_stuff]]
       packages.first.reference_numbers << ReferenceNumber.new('O1','A Short String')
-      packages.first.reference_numbers << ReferenceNumber.new('O2','A Bit Longer')
+      packages.first.shipper_type_id = UPS::PACKAGING_TYPES.index('Your Packaging') 
+      packages.last.reference_numbers << ReferenceNumber.new('O2','A Bit Longer')
+      packages.last.shipper_type_id = UPS::PACKAGING_TYPES.index('Your Packaging')
       shipment = Shipment.new(
                               :shipper => shipper,
                               :payer => shipper,
@@ -50,12 +52,12 @@ class UPSShippingTest < Test::Unit::TestCase
       #     end
       # end
 
-      # shipment.log.each_with_index do | log,index |
-      #     File.open( "/tmp/ups-#{index}.xml",'w') do | f |
-      #         xml = REXML::Document.new( log )
-      #         xml.write( f, 2 )
-      #     end
-      # end
+       shipment.log.each_with_index do | log,index |
+           File.open( "/tmp/ups-#{index}.xml",'w') do | f |
+               xml = REXML::Document.new( log )
+               xml.write( f, 2 )
+           end
+       end
       
       assert_equal 2, shipment.labels.length
       

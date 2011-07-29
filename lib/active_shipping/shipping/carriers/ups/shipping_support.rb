@@ -213,7 +213,7 @@ module ActiveMerchant
                 raise package.class.to_s unless package.kind_of?(ActiveMerchant::Shipping::Package)
                 imperial = ['US','LR','MM'].include?(origin.country_code(:alpha2))
                 xml.Package do
-                    xml.PackagingType { xml.Code '02' }
+                    xml.PackagingType { xml.Code package.shipper_type_id }
                     unless package.description.blank?
                         xml.Description package.description
                     end

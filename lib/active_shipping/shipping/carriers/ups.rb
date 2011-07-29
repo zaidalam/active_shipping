@@ -86,6 +86,20 @@ module ActiveMerchant
         "07" => "UPS Express"
       }
       
+      PACKAGING_TYPES = {
+        "01" => "UPS Letter",
+        "02" => "Your Packaging",
+        "03" => "UPS Tube",
+        "04" => "UPS Pak",
+        "21" => "UPS Express Box",
+        "24" => "UPS 25kg Box",
+        "25" => "UPS 10kg Box",
+        "30" => "UPS Pallet",
+        "2a" => "UPS Small Express Box",
+        "2b" => "UPS Medium Express Box",
+        "2c" => "UPS Large Express Box"
+      }
+
       # From http://en.wikipedia.org/w/index.php?title=European_Union&oldid=174718707 (Current as of November 30, 2007)
       EU_COUNTRY_CODES = ["GB", "AT", "BE", "BG", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"]
       

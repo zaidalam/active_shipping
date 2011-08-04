@@ -107,13 +107,6 @@ class FedShippingTest < Test::Unit::TestCase
 
       @carrier.ship( shipment, :test => true )
       @carrier.cancel(shipment, {:test => true})
-      
-      shipment.log.each_with_index do |log, index|
-        File.open("/tmp/fedex-#{index}.xml",'w') do | db |
-            xml = REXML::Document.new( log )
-            xml.write( db, 2 )
-        end
-      end
 
       assert_nil shipment.tracking
   end

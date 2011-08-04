@@ -62,7 +62,7 @@ module ActiveMerchant
   module Shipping
     module TestFixtures
       
-      mattr_reader :packages, :locations
+      mattr_reader :packages, :locations, :shipments
       
       @@packages = {
         :just_ounces => Package.new(16, nil, :units => :imperial),
@@ -79,7 +79,11 @@ module ActiveMerchant
         :chocolate_stuff => Package.new(80, [2,6,12], :units => :imperial),
         :shipping_container => Package.new(2200000, [2440, 2600, 6058], :description => '20 ft Standard Container', :units => :metric)
       }
-      
+      @@shipments = {
+        :ups => {
+          :voidable => Shipment.new(:tracking => "1Z12345E0193081456", :number => '3233',:service => '01' )
+        }
+      } 
       @@locations = {
         :bare_ottawa => Location.new(:country => 'CA', :postal_code => 'K1P 1J1'),
         :bare_beverly_hills => Location.new(:country => 'US', :zip => '90210'),

@@ -5,9 +5,9 @@ class UPSShippingTest < Test::Unit::TestCase
     def setup
         @packages  = TestFixtures.packages
         @locations = TestFixtures.locations
+        @shipments = TestFixtures.shipments[:ups]
         UPS.include_ship_support!
         @carrier   = UPS.new(fixtures(:ups))
-
     end
   
   def test_ship_package
@@ -36,7 +36,7 @@ class UPSShippingTest < Test::Unit::TestCase
                                                           :width=>8, :height=>4
                                                       }),
                               :number => '3233',
-                              :service => '03' 
+                              :service => '01' 
                               )
 
       
@@ -65,6 +65,23 @@ class UPSShippingTest < Test::Unit::TestCase
           
   end
 
-
+  def test_cancel_shipment
  
+      shipment = @shipments[:voidable]
+      @carrier.cancel_shipment( shipment, {:test => true} )
+
+      #shipment.log.each_with_index do | log,index |
+      #    File.open( "/tmp/ups-#{index}.xml",'w') do | f |
+      #        xml = REXML::Document.new( log )
+      #        xml.write( f, 2 )
+      #    end
+      #end
+      
+      assert_nil shipment.tracking
+  end
+  
+  def test_cancel_shipment_with_packages
+    #TODO: Needs to be implemented
+  end
+
 end

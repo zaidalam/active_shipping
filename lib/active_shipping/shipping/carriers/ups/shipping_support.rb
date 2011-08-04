@@ -11,6 +11,7 @@ module ActiveMerchant
             def UPSShippingSupport.included( cls )
                 cls::RESOURCES[:shipment_confirm] = 'ups.app/xml/ShipConfirm'
                 cls::RESOURCES[:shipment_accept ] = 'ups.app/xml/ShipAccept'
+                cls::RESOURCES[:void_shipment]    = 'ups.app/xml/Void'
             end
 
             def ship( shipment, options={} )
@@ -35,9 +36,9 @@ module ActiveMerchant
             end
 
             def cancel_shipment(shipment, options = {})
-                request = build_void_shipment_request(shipment)
+                request = build_void_shipment_request(shipment, (options[:packages] || []))
                 shipment.log(request)
-                response = commit(:void_shipment, save_request(build_access_request + request), (options[:test] || false))
+                response = commit(:void_shipment, save_request(build_new_access_request + request), (options[:test] || false))
                 shipment.log(response)
                 parse_void_shipment(shipment, response)
                 shipment
@@ -87,6 +88,17 @@ module ActiveMerchant
                         xml.CustomerContext shipment.number
                     end
                 end
+            end
+            
+            def build_new_access_request
+              xml = Builder::XmlMarkup.new
+              xml.instruct!
+              xml.AccessRequest do
+                  xml.AccessLicenseNumber @options[:key]
+                  xml.UserId @options[:login]
+                  xml.Password @options[:password]
+              end
+              xml.target!
             end
 
             def build_shipment_confirm_request(shipment)
@@ -148,16 +160,25 @@ module ActiveMerchant
                 xml.target!
             end
 
-            def build_void_shipment_request(shipment)
+            def build_void_shipment_request(shipment, packages)
                 xml = Builder::XmlMarkup.new
                 xml.instruct!
-                xml.VoidShimentRequest do
+                xml.VoidShipmentRequest do
                     xml.Request do
                         xml.RequestAction '1'
+                        add_reference(xml, shipment)
                     end
-                    add_reference(xml, shipment)
+                    if packages.empty?
+                        xml.ShipmentIdentificationNumber shipment.tracking
+                    else
+                        xml.ExpandedVoidShipment do
+                            xml.ShipmentIdentificationNumber shipment.tracking
+                            packages.each do |package|
+                                xml.TrackingNumber package.tracking
+                            end
+                        end
+                    end
                 end
-                xml.ShipmentIdentificationNumber shipment.tracking
                 xml.target!
             end
 

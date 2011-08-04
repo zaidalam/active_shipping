@@ -29,7 +29,7 @@ module ActiveMerchant #:nodoc:
         else
           process_dimensions
         end
-        
+        @tracking = options[:tracking] || nil
         @value = Package.cents_from(options[:value])
         @currency = options[:currency] || (options[:value].currency if options[:value].respond_to?(:currency))
         @cylinder = (options[:cylinder] || options[:tube]) ? true : false

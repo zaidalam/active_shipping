@@ -81,7 +81,18 @@ class UPSShippingTest < Test::Unit::TestCase
   end
   
   def test_cancel_shipment_with_packages
-    #TODO: Needs to be implemented
+      shipment = @shipments[:voidable_with_package]
+      @carrier.cancel_shipment( shipment, {:packages => shipment.packages, :test => true} )
+
+      #shipment.log.each_with_index do | log,index |
+      #    File.open( "/tmp/ups-#{index}.xml",'w') do | f |
+      #        xml = REXML::Document.new( log )
+      #        xml.write( f, 2 )
+      #    end
+      #end
+      
+      assert_nil shipment.tracking
+
   end
 
 end

@@ -81,7 +81,9 @@ module ActiveMerchant
       }
       @@shipments = {
         :ups => {
-          :voidable => Shipment.new(:tracking => "1Z12345E0193081456", :number => '3233',:service => '01' )
+          :voidable => Shipment.new(:tracking => "1Z12345E0193081456", :number => '3233',:service => '01' ),
+          :voidable_with_package => Shipment.new(:tracking => "1Z12345E2318693258", :number => '3233', :service => '01', 
+                                                 :packages => [Package.new(12, nil, :units => :imperial, :tracking => "1Z12345E0193072168")])
         }
       } 
       @@locations = {

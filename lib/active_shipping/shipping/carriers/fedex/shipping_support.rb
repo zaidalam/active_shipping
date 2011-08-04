@@ -9,20 +9,25 @@ module ActiveMerchant
                 
                 req = build_shipment_request(shipment)
                 shipment.log(req)
-                
                 response = commit(save_request(req), (options[:test] || false)).gsub(/<(\/)?.*?\:(.*?)>/, '<\1\2>')
-
                 shipment.log(response)
-            
                 parse_shipment_response(response, shipment)
-                
                 shipment   
             end
             
+            def cancel(shipment, options={})
+
+              req = build_delete_shipment_request(shipment)
+              shipment.log(req)
+              response = commit(save_request(req), (options[:test] || false)).gsub(/<(\/)?.*?\:(.*?)>/, '<\1\2>')
+              shipment.log(response)
+              parse_delete_shipment_response(response, shipment)
+              shipment
+            end
+
             def parse_shipment_response(response, shipment)
 
                 xml = REXML::Document.new(response)
-
                 if response_success?(xml)
                     root = xml.elements.first
                     root.elements['//Image'].each_with_index do | label,index |
@@ -32,10 +37,36 @@ module ActiveMerchant
                                                      )
                     end
                     shipment.tracking = root.elements['//TrackingNumber'][0].to_s
-
                 else
                     shipment.errors.push( response_message(xml) )
                 end
+            end
+            
+            def parse_delete_shipment_response(response, shipment)
+              xml = REXML::Document.new(response)
+              if response_success?(xml)
+                shipment.tracking = nil
+              else
+                shipment.errors.push( response_message(xml) )
+              end
+            end
+
+            def build_delete_shipment_request(shipment)
+              xml_request = XmlNode.new('DeleteShipmentRequest', 'xmlns' => 'http://fedex.com/ws/ship/v10') do |root_node|
+                  root_node << build_request_header
+                  root_node << XmlNode.new('Version') do |version_node|
+                      version_node << XmlNode.new('ServiceId', 'ship')
+                      version_node << XmlNode.new('Major', '10')
+                      version_node << XmlNode.new('Intermediate', '0')
+                      version_node << XmlNode.new('Minor', '0')
+                  end
+                  root_node << XmlNode.new('TrackingId') do |tracking_id|
+                    tracking_id << XmlNode.new('TrackingIdType', 'EXPRESS')
+                    tracking_id << XmlNode.new('TrackingNumber', shipment.tracking)
+                  end
+                  root_node << XmlNode.new('DeletionControl', 'DELETE_ALL_PACKAGES')
+              end
+              xml_request.to_s
             end
 
             def build_shipment_request(shipment)

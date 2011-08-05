@@ -17,11 +17,11 @@ module ActiveMerchant
             
             def cancel(shipment, options={})
 
-              req = build_delete_shipment_package_request(shipment)
+              req = build_delete_shipment_package_request(options[:package] || shipment)
               shipment.log(req)
               response = commit(save_request(req), (options[:test] || false)).gsub(/<(\/)?.*?\:(.*?)>/, '<\1\2>')
               shipment.log(response)
-              parse_delete_shipment_package_response(response, shipment)
+              parse_delete_shipment_package_response(response, shipment, options[:package])
               shipment
             end
 
@@ -42,12 +42,12 @@ module ActiveMerchant
                 end
             end
             
-            def parse_delete_shipment_package_response(response, shipment)
+            def parse_delete_shipment_package_response(response, shipment, pkg)
               xml = REXML::Document.new(response)
               if response_success?(xml)
-                shipment.tracking = nil
+                shipment.tracking = nil if pkg.nil?
               else
-                shipment.errors.push( response_message(xml) )
+                shipment.errors.push( response_message(xml) ) 
               end
             end
 

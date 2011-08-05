@@ -17,11 +17,11 @@ module ActiveMerchant
             
             def cancel(shipment, options={})
 
-              req = build_delete_shipment_request(shipment)
+              req = build_delete_shipment_package_request(shipment)
               shipment.log(req)
               response = commit(save_request(req), (options[:test] || false)).gsub(/<(\/)?.*?\:(.*?)>/, '<\1\2>')
               shipment.log(response)
-              parse_delete_shipment_response(response, shipment)
+              parse_delete_shipment_package_response(response, shipment)
               shipment
             end
 
@@ -42,7 +42,7 @@ module ActiveMerchant
                 end
             end
             
-            def parse_delete_shipment_response(response, shipment)
+            def parse_delete_shipment_package_response(response, shipment)
               xml = REXML::Document.new(response)
               if response_success?(xml)
                 shipment.tracking = nil
@@ -51,7 +51,7 @@ module ActiveMerchant
               end
             end
 
-            def build_delete_shipment_request(shipment)
+            def build_delete_shipment_package_request(shipment_package)
               xml_request = XmlNode.new('DeleteShipmentRequest', 'xmlns' => 'http://fedex.com/ws/ship/v10') do |root_node|
                   root_node << build_request_header
                   root_node << XmlNode.new('Version') do |version_node|
@@ -61,10 +61,14 @@ module ActiveMerchant
                       version_node << XmlNode.new('Minor', '0')
                   end
                   root_node << XmlNode.new('TrackingId') do |tracking_id|
-                    tracking_id << XmlNode.new('TrackingIdType', 'EXPRESS')
-                    tracking_id << XmlNode.new('TrackingNumber', shipment.tracking)
+                    tracking_id << XmlNode.new('TrackingIdType', 'EXPRESS') #Should make it dynamic
+                    tracking_id << XmlNode.new('TrackingNumber', shipment_package.tracking)
                   end
-                  root_node << XmlNode.new('DeletionControl', 'DELETE_ALL_PACKAGES')
+                  if shipment_package.is_a? Shipment #Check if shipment_package is instance of shipment
+                    root_node << XmlNode.new('DeletionControl', 'DELETE_ALL_PACKAGES')
+                  else
+                    root_node << XmlNode.new('DeletionControl', 'DELETE_ONE_PACKAGE')
+                  end
               end
               xml_request.to_s
             end
